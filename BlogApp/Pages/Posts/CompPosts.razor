@@ -1,0 +1,113 @@
+﻿@page "/posts"
+
+@using BlogApp.Modelos;
+@using BlogApp.Servicios.IServicio
+@inject IPostServicio postServicio;
+@inject IJSRuntime JSRuntime
+
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<h1 class="text-center">Posts</h1>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-7">
+                <h4 class="card-title text-dark">Lista de Posts</h4>
+            </div>
+            <div class="col-3 offset-2">
+                <NavLink href="crear-post" class="btn btn-primary">
+                    <i class="bi bi-plus-circle-fill"></i>&nbsp; Nuevo Post
+                </NavLink>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (Posts.Count() > 0)
+        {
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Etiquetas</th>
+                        <th>Imagen</th>
+                        <th>Fecha de Creación</th>
+                        <th>Fecha de Actualización</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Posts)
+                    {
+                        <tr>
+                            <td>@post.Id</td>
+                            <td>@post.Titulo</td>
+                            <td>@post.Descripcion</td>
+                            <td>@post.Etiquetas</td>
+                            <td><img src="@post.RutaImagen" class="img-fluid" width="100px" /></td>
+                            <td>@post.FechaCreacion</td>
+                            <td>@post.FechaActualizacion</td>
+                            <td>
+                                <NavLink href="@($"editar-post/{post.Id}")" class="btn btn-success">
+                                    <i class="bi bi-plus-gear-fill"></i>&nbsp; Editar
+                                </NavLink>
+                                <button class="btn btn-danger" @onclick="() => BorrarPost(post.Id)">
+                                    <i class="bi bi-plus-trash-fill"></i>&nbsp; Borrar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-center">Todavía no hay Posts</p>
+        }
+
+    </div>
+</div>
+
+<ConfirmarBorrado ProcesandoComponentePadre="estaProcesando" CambioConfirmacion="ClickConfirmacionBorrado"/>
+
+@code {
+    public IEnumerable<Post> Posts { get; set; } = new List<Post>();
+
+    //Parte Borrar
+    private bool estaProcesando { get; set; } = false;
+    private int? BorrarIdPost { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Posts = await postServicio.GetPosts();
+    }
+
+    protected async Task BorrarPost(int postId)
+    {
+        BorrarIdPost = postId;
+
+        await JSRuntime.InvokeVoidAsync("MostrarModalConfirmacionBorrado");
+
+    }
+
+    public async Task ClickConfirmacionBorrado(bool confirmar)
+    {
+        estaProcesando = true;
+        if(confirmar && BorrarIdPost != null)
+        {
+            bool respuesta = await postServicio.EliminarPost(BorrarIdPost.Value);
+
+            if (respuesta) await JSRuntime.ToastrSuccess("Post Eliminado con Exito");
+            else await JSRuntime.ToastrError("Error al Eliminar el Post");
+
+            await OnInitializedAsync(); // así actualiza la pagína con los Post que tenga
+
+        }
+        await JSRuntime.InvokeVoidAsync("OcultarModalConfirmacionBorrado");
+        estaProcesando = false;
+
+    }
+}

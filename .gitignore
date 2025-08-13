@@ -1,0 +1,23 @@
+# Archivos de compilación
+bin/
+obj/
+
+# Archivos de usuario
+*.user
+*.suo
+
+# Configuración de Visual Studio
+.vs/
+*.vcxproj.*
+*.csproj.user
+
+# Archivos de paquetes
+packages/
+*.nupkg
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Archivos de configuración local
+appsettings.Development.json

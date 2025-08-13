@@ -1,0 +1,58 @@
+﻿@page "/acceder"
+
+
+<div class="py-4">
+    <div class=" row form-group ">
+        <div class="col-6 offset-3 ">
+            <div class="card border">
+                <div class="card-body px-lg-5 pt-4">
+                    <h3 class="col-12 text-success text-center py-2">
+                        <strong>Acceder</strong>
+                    </h3>
+                    
+                    <hr style="background-color:aliceblue" />
+
+                    <EditForm Model="usuarioAuth" OnValidSubmit="AccesoUsuario">
+                        <DataAnnotationsValidator />
+
+                        @if (MostrarErroresAuth)
+                        {
+                            <p class="text-center text-danger">@Errores</p>
+                        }
+
+                        <div class="form-row py-2">
+                            <InputText @bind-Value="usuarioAuth.NombreUsuario" id="email" placeholder="Nombre usuario..." class="form-control mb-2" />
+                            <ValidationMessage For="(() => usuarioAuth.NombreUsuario)"></ValidationMessage>
+                        </div>
+
+                        <div class="form-row py-2">
+                            <InputText @bind-Value="usuarioAuth.Password" type="password" placeholder="Password..." id="password" class="form-control mb-2" />
+                            <ValidationMessage For="(() => usuarioAuth.Password)"></ValidationMessage>
+                        </div>
+
+                        <hr style="background-color:aliceblue" />
+
+                        <div class="row py-2">
+                            <div class="col-6">
+                                @if (EstaProcesando)
+                                {
+                                    <button type="submit" class="btn btn-success disabled" style="vertical-align:middle;line-height:30px;"><i class="fas fa-sign-in-alt"></i> Porfavor espera...</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-success" style="vertical-align:middle;line-height:30px;"><i class="fas fa-sign-in-alt"></i> Acceder</button>
+                                }
+                            </div>                     
+                            
+                            <div class="col-6">
+                                <a href="/Registrarse"
+                                   class="btn btn-primary text-white" style="vertical-align:middle;line-height:30px;"><i class="fas fa-user-plus"></i> Registrar nuevo usuario</a>
+                            </div>
+                        </div>
+                    </EditForm>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+﻿<Router AppAssembly="@typeof(App).Assembly">
+
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">        
+            <Authorizing>
+                <p>Por favor, espere mientras autorizamos el usuario</p>
+            </Authorizing>
+            <NotAuthorized>
+                <BlogApp.Pages.Autentication.RedireccionarAlAcceso></BlogApp.Pages.Autentication.RedireccionarAlAcceso>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Error, no hay nada en esta dirección</p>
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+
+@*  Así estaba antes el App.razor   
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>No encontrado</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Error, no hay nada en esta dirección</p>
+        </LayoutView>
+    </NotFound> 
+*@
+
+</Router>

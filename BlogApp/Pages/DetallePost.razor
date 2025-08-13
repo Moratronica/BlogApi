@@ -1,0 +1,52 @@
+﻿@page "/detalle-post/{postId:int}"
+@using BlogApp.Modelos
+@using BlogApp.Servicios.IServicio
+@inject IJSRuntime JSRuntime
+@inject IPostServicio postServicio
+
+<PageTitle>Detalle Post</PageTitle>
+
+<h1 class="text-center mt-4">@post.Titulo</h1>
+
+<div class="col-8 offset-2">
+   <img src="@post.RutaImagen" class="img-fluid" />
+</div>
+
+<p>@post.Descripcion</p>
+<h4><strong>Etiquetas: </strong>@post.Etiquetas</h4>
+<h5><strong>Fecha de Creación: </strong>@post.FechaCreacion</h5>
+<NavLink href="/" class="btn btn-secondary"><i class="bi bi-arrow-left-circle-fill"></i> Volver</NavLink>
+
+
+@* 
+    PRUEBA TOASTR    
+<div class="row mt-4">
+    <div class="col-4">
+        <button class="btn btn-success mt-2" @onclick="DemoSuccess">Demo Toast Success</button>
+        <button class="btn btn-danger mt-2" @onclick="DemoError">Demo Toast Error</button>
+    </div>
+</div>
+*@
+
+@code {
+    private Post post { get; set; } = new Post();
+
+    [Parameter]
+    public int? postId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        post = await postServicio.GetPost(postId.Value);
+    }
+
+    // Métodos probar Toastr
+    // private async Task DemoSuccess()
+    // {
+    //     await JSRuntime.ToastrSuccess("Tarea Completada");
+    // }
+
+    // private async Task DemoError()
+    // {
+    //     await JSRuntime.ToastrError("Tarea Completada");
+    // }
+}
